@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, Payment
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -18,3 +18,9 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
+
+
+class PaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Payment
+        fields = ['date', 'course', 'lesson', 'amount', 'method']
