@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'rest_framework_simplejwt',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -134,3 +135,6 @@ AUTH_USER_MODEL = 'users.User'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+STRIPE_SECRET_KEY = "sk_test_51QjdadC0HIwzcdlqookIsWGFRiM83BBH9tcNYFv33vKkBA0Px1jBO6qd0PhLTZwajiwRvi8gAhEx22ZJHeQAJr0n00dqx83CzY"
+STRIPE_PUBLISHABLE_KEY = "pk_test_51QjdadC0HIwzcdlqGOEY2yePlpzhc18ahA42NdCQXRS0Sj7StQnS8hlsb1jGDRlw2YCkottwyIJLw1LGIetGMyIi00XabjD2GP"
