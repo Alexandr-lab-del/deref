@@ -33,6 +33,8 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework_simplejwt',
     'drf_yasg',
+    'django_celery_results',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -138,3 +140,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STRIPE_SECRET_KEY = "sk_test_51QjdadC0HIwzcdlqookIsWGFRiM83BBH9tcNYFv33vKkBA0Px1jBO6qd0PhLTZwajiwRvi8gAhEx22ZJHeQAJr0n00dqx83CzY"
 STRIPE_PUBLISHABLE_KEY = "pk_test_51QjdadC0HIwzcdlqGOEY2yePlpzhc18ahA42NdCQXRS0Sj7StQnS8hlsb1jGDRlw2YCkottwyIJLw1LGIetGMyIi00XabjD2GP"
+
+CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
+CELERY_TASK_TRACK_STARTED = True
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.mail.ru'
+EMAIL_PORT = 465
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+
+SERVER_EMAIL = os.getenv('EMAIL_HOST_USER')
+DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER')

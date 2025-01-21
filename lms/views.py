@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from .paginators import CustomPagination
+from .tasks import send_course_update_email
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -61,3 +62,21 @@ class SubscriptionToggleAPIView(APIView):
             message = 'Подписка добавлена'
 
         return Response({"message": message})
+
+
+class UpdateCourseView(APIView):
+    permission_classes = [IsAuthenticated, IsModerator]
+
+    def post(self, request, course_id):
+        course = get_object_or_404(Course, id=course_id)
+
+        update_description = request.data.get("description", "Обновление курса")
+
+        course.description = update_description
+        course.save()
+
+        subscribers = course.subscribers.all()
+        for user in subscribers:
+            send_course_update_email.delay(user.email, course.name, update_description)
+
+        return Response({"status": "Курс обновлен!"})
