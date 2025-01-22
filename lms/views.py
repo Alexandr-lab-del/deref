@@ -1,4 +1,4 @@
-from rest_framework import viewsets, generics
+from rest_framework import viewsets, generics, status
 from .models import Course, Lesson, Subscription
 from .serializers import CourseSerializer, LessonSerializer, SubscriptionSerializer
 from rest_framework.permissions import IsAuthenticated
@@ -23,6 +23,22 @@ class CourseViewSet(viewsets.ModelViewSet):
         else:
             self.permission_classes = [IsAuthenticated]
         return [permission() for permission in self.permission_classes]
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if 'description' in request.data:
+            update_description = request.data.get("description")
+            subscribers = instance.subscribers.all()
+
+            for user in subscribers:
+                send_course_update_email.delay(user.email, instance.name, update_description)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class LessonListCreateView(generics.ListCreateAPIView):
@@ -62,21 +78,3 @@ class SubscriptionToggleAPIView(APIView):
             message = 'Подписка добавлена'
 
         return Response({"message": message})
-
-
-class UpdateCourseView(APIView):
-    permission_classes = [IsAuthenticated, IsModerator]
-
-    def post(self, request, course_id):
-        course = get_object_or_404(Course, id=course_id)
-
-        update_description = request.data.get("description", "Обновление курса")
-
-        course.description = update_description
-        course.save()
-
-        subscribers = course.subscribers.all()
-        for user in subscribers:
-            send_course_update_email.delay(user.email, course.name, update_description)
-
-        return Response({"status": "Курс обновлен!"})
