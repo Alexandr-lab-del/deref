@@ -26,6 +26,13 @@
 9. При каждом push в ветку `main`:
 * Тесты автоматически запускаются.
 * После успешного прохождения выполняется деплой.
-10. - 
 * Сервер использует Docker Compose для контейнеризации приложения.
 * Для доступа используйте Nginx с проксированием на Gunicorn.
+10. Выполните команды из пункта 8, затем соберите статические файлы:
+* docker-compose exec web python manage.py collectstatic --noinput
+11. Настройте SSH доступ
+12. Подготовьте проект
+* mkdir -p /path/to/your/project
+* cd /path/to/your/project
+* git clone <URL> .
+* docker-compose down && docker-compose up -d --build
