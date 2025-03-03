@@ -1,6 +1,6 @@
 # Используем официальный Python-образ
 FROM python:3.10-slim
-
+RUN python -m pip install --upgrade pip
 # Настройки рабочего каталога
 WORKDIR /app
 
