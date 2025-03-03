@@ -5,9 +5,7 @@ FROM python:3.9-slim
 WORKDIR /app
 
 # Установка зависимостей системы
-RUN apt-get update && apt-get install -y \
-    netcat gcc libpq-dev && \
-    apt-get clean
+RUN apt-get update && apt-get install -y netcat-openbsd gcc libpq-dev && apt-get clean
 
 # Установка зависимостей Python
 COPY requirements.txt .
