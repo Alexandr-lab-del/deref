@@ -1,4 +1,4 @@
-name: Deploy Django
+name: Django CI/CD
 
 on:
   push:
@@ -10,14 +10,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
-    - name: Check out repository
-      uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v3
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
-        python-version: '3.10'
+        python-version: '3.9'
 
     - name: Install dependencies
       run: |
@@ -29,24 +28,18 @@ jobs:
         python manage.py test
 
   deploy:
-    needs: test
     runs-on: ubuntu-latest
+    needs: test
 
     steps:
-    - name: Check out repository
-      uses: actions/checkout@v2
-
-    - name: Deploy to Server
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        SERVER: ${{ secrets.SERVER }}
-        USER: ${{ secrets.USER }}
-      run: |
-        echo "$SSH_PRIVATE_KEY" > private_key.pem
-        chmod 600 private_key.pem
-        ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$SERVER "
-        cd /path/to/your/project &&
-        git pull origin main &&
-        docker-compose down &&
-        docker-compose up --build -d
-        "
+    - name: Deploy to server
+      uses: appleboy/ssh-action@v0.1.8
+      with:
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        key: ${{ secrets.REMOTE_KEY }}
+        envs:
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+        script: |
+          cd /path/to/project
+          ./deploy.sh
