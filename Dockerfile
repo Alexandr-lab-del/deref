@@ -1,11 +1,15 @@
-# Используем официальный Python-образ
+# Используем базовый образ python:3.10-slim
 FROM python:3.10-slim
+
+# Обновляем pip перед установкой зависимостей
 RUN python -m pip install --upgrade pip
+
 # Настройки рабочего каталога
 WORKDIR /app
 
 # Установка зависимостей системы
-RUN apt-get update && apt-get install -y netcat-openbsd gcc libpq-dev && apt-get clean
+RUN apt-get update && apt-get install -y \
+    netcat-openbsd gcc libpq-dev && apt-get clean
 
 # Установка зависимостей Python
 COPY requirements.txt .
