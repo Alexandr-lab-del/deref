@@ -1,25 +1,24 @@
-# Используем базовый образ python:3.10-slim
+# Используем базовый образ Python
 FROM python:3.10-slim
 
-# Обновляем pip перед установкой зависимостей
-RUN python -m pip install --upgrade pip
+# Обновляем систему и устанавливаем необходимые пакеты
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Настройки рабочего каталога
+# Устанавливаем рабочую директорию
 WORKDIR /app
 
-# Установка зависимостей системы
-RUN apt-get update && apt-get install -y \
-    netcat-openbsd gcc libpq-dev && apt-get clean
-
-# Установка зависимостей Python
-COPY requirements.txt .
+# Устанавливаем Python-зависимости
+COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Копирование проекта в контейнер
+# Копируем проект в рабочую директорию
 COPY . .
 
-# Открытие порта приложения
+# Определяем порт приложения
 EXPOSE 8000
 
-# Запуск серверного приложения
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "myproject.wsgi:application"]
+# Команда по умолчанию запускается Gunicorn
+CMD ["gunicorn", "-b", "0.0.0.0:8000", "myproject.wsgi:application"]
