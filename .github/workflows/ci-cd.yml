@@ -40,7 +40,21 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Set up environment variables
+        run: |
+          echo "POSTGRES_DB=test_db" >> $GITHUB_ENV
+          echo "POSTGRES_USER=test_user" >> $GITHUB_ENV
+          echo "POSTGRES_PASSWORD=test_password" >> $GITHUB_ENV
+          echo "POSTGRES_HOST=localhost" >> $GITHUB_ENV
+          echo "POSTGRES_PORT=5432" >> $GITHUB_ENV
+
       - name: Run tests
+        env:
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+          POSTGRES_HOST: ${{ env.POSTGRES_HOST }}
+          POSTGRES_PORT: ${{ env.POSTGRES_PORT }}
         run: python manage.py test
 
   deploy:
