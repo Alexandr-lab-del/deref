@@ -74,6 +74,7 @@ jobs:
         run: |
           ssh -v -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
             cd deref
+            git pull origin main
             docker-compose down
             docker-compose up -d --build
           EOF
