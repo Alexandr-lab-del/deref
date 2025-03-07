@@ -7,7 +7,8 @@ services:
       dockerfile: Dockerfile
     image: deref-django
     container_name: django
-    command: sh -c "python manage.py migrate && python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000"
+    command: >
+      sh -c "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn myproject.wsgi: application --bind 0.0.0.0:8000"
     ports:
       - "8000:8000"
     volumes:
