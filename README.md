@@ -36,3 +36,45 @@
 * cd /path/to/your/project
 * git clone <URL> .
 * docker-compose down && docker-compose up -d --build
+13. Что делать? (пример для windows powershell):
+* Нажимаем win + R
+* Пишем Powershell
+* В открывшемся окне вводим следующие комманды:
+```
+   sudo apt-get update && sudo apt-get upgrade
+   sudo apt install apt-transport-https ca-certificates curl software-properties-common -y
+     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+     sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+     sudo apt update
+     sudo apt install docker-ce -y
+   sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+     sudo chmod +x /usr/local/bin/docker-compose
+     docker-compose --version
+```
+* Подключаемся к серверу и клонируем репозиторий:
+```
+ssh test@158.160.157.141
+git clone git@github.com:Alexandr-lab-del/deref.git
+```
+* Создаем файл .env:
+```
+nano .env
+Внутри пишем:
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+POSTGRES_DB=
+POSTGRES_PORT=
+POSTGRES_HOST=
+CELERY_BROKER_URL=
+CELERY_BACKEND=
+EMAIL_HOST_USER=
+REDIS_URL=
+DJANGO_SECRET_KEY=
+DJANGO_DEBUG=
+DJANGO_ALLOWED_HOSTS=
+```
+* Запускаем контейнеры:
+```
+   docker-compose up --build -d
+      docker ps 
+```
